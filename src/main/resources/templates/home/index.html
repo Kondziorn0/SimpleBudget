@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimpleBudget - Zarządzanie budżetem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#06b6d4',
+                            600: '#0891b2',
+                            700: '#0e7490',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-primary-50 to-blue-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a th:href="@{/}" class="flex items-center space-x-2">
+                        <i class="fas fa-wallet text-primary-600 text-2xl"></i>
+                        <span class="text-xl font-bold text-gray-900">SimpleBudget</span>
+                    </a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="hidden md:flex space-x-1">
+                        <a th:href="@{/}" 
+                           class="px-3 py-2 rounded-md text-sm font-medium bg-primary-100 text-primary-700 transition-colors">
+                            <i class="fas fa-home mr-1"></i>Strona główna
+                        </a>
+                        
+                        <div class="relative group">
+                            <button class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-100 transition-colors flex items-center">
+                                <i class="fas fa-plus mr-1"></i>Dochody
+                                <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                            </button>
+                            <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <a th:href="@{/income}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-list mr-2"></i>Lista dochodów
+                                </a>
+                                <a th:href="@{/income/new}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-plus mr-2"></i>Dodaj dochód
+                                </a>
+                                <a th:href="@{/income-categories}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-tags mr-2"></i>Kategorie dochodów
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="relative group">
+                            <button class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-100 transition-colors flex items-center">
+                                <i class="fas fa-minus mr-1"></i>Wydatki
+                                <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                            </button>
+                            <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <a th:href="@{/expense}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-list mr-2"></i>Lista wydatków
+                                </a>
+                                <a th:href="@{/expense/new}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-plus mr-2"></i>Dodaj wydatek
+                                </a>
+                                <a th:href="@{/expense-categories}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-tags mr-2"></i>Kategorie wydatków
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile menu button -->
+                    <div class="md:hidden">
+                        <button id="mobile-menu-button" class="text-gray-700 hover:text-primary-600 focus:outline-none">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mobile menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <div class="space-y-2">
+                    <a th:href="@{/}" class="block px-3 py-2 text-sm bg-primary-100 text-primary-700 rounded-md">
+                        <i class="fas fa-home mr-2"></i>Strona główna
+                    </a>
+                    <div class="px-3 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider">Dochody</div>
+                    <a th:href="@{/income}" class="block px-6 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                        <i class="fas fa-list mr-2"></i>Lista dochodów
+                    </a>
+                    <a th:href="@{/income/new}" class="block px-6 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                        <i class="fas fa-plus mr-2"></i>Dodaj dochód
+                    </a>
+                    <a th:href="@{/income-categories}" class="block px-6 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                        <i class="fas fa-tags mr-2"></i>Kategorie dochodów
+                    </a>
+                    <div class="px-3 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider">Wydatki</div>
+                    <a th:href="@{/expense}" class="block px-6 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                        <i class="fas fa-list mr-2"></i>Lista wydatków
+                    </a>
+                    <a th:href="@{/expense/new}" class="block px-6 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                        <i class="fas fa-plus mr-2"></i>Dodaj wydatek
+                    </a>
+                    <a th:href="@{/expense-categories}" class="block px-6 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                        <i class="fas fa-tags mr-2"></i>Kategorie wydatków
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="text-center">
+            <h1 class="text-4xl font-bold text-gray-900 sm:text-6xl">
+                <i class="fas fa-wallet text-primary-600 mr-4"></i>
+                SimpleBudget
+            </h1>
+            <p class="mt-6 text-xl text-gray-600 max-w-3xl mx-auto">
+                Zarządzaj swoimi finansami w prosty i intuicyjny sposób. Śledź dochody, wydatki i kontroluj swój budżet.
+            </p>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <a th:href="@{/income/new}" class="group relative bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 hover:border-green-300">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="flex items-center justify-center h-12 w-12 rounded-md bg-green-500 text-white group-hover:bg-green-600 transition-colors">
+                            <i class="fas fa-plus text-lg"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-medium text-gray-900 group-hover:text-green-600">Dodaj dochód</h3>
+                        <p class="text-sm text-gray-500">Zapisz nowy przychód</p>
+                    </div>
+                </div>
+            </a>
+
+            <a th:href="@{/expense/new}" class="group relative bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 hover:border-red-300">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="flex items-center justify-center h-12 w-12 rounded-md bg-red-500 text-white group-hover:bg-red-600 transition-colors">
+                            <i class="fas fa-minus text-lg"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-medium text-gray-900 group-hover:text-red-600">Dodaj wydatek</h3>
+                        <p class="text-sm text-gray-500">Zapisz nowy wydatek</p>
+                    </div>
+                </div>
+            </a>
+
+            <a th:href="@{/income}" class="group relative bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 hover:border-primary-300">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="flex items-center justify-center h-12 w-12 rounded-md bg-primary-600 text-white group-hover:bg-primary-700 transition-colors">
+                            <i class="fas fa-chart-line text-lg"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-medium text-gray-900 group-hover:text-primary-600">Zobacz dochody</h3>
+                        <p class="text-sm text-gray-500">Przeglądaj przychody</p>
+                    </div>
+                </div>
+            </a>
+
+            <a th:href="@{/expense}" class="group relative bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200 hover:border-primary-300">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="flex items-center justify-center h-12 w-12 rounded-md bg-primary-600 text-white group-hover:bg-primary-700 transition-colors">
+                            <i class="fas fa-chart-bar text-lg"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-medium text-gray-900 group-hover:text-primary-600">Zobacz wydatki</h3>
+                        <p class="text-sm text-gray-500">Przeglądaj wydatki</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Features Section -->
+        <div class="mt-16">
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white mb-4">
+                        <i class="fas fa-calculator text-lg"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Łatwe obliczenia</h3>
+                    <p class="text-gray-600">Automatyczne sumowanie dochodów i wydatków z przejrzystymi raportami.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-md bg-purple-500 text-white mb-4">
+                        <i class="fas fa-tags text-lg"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Kategoryzacja</h3>
+                    <p class="text-gray-600">Organizuj swoje finanse według kategorii dla lepszego przeglądu.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-md bg-green-500 text-white mb-4">
+                        <i class="fas fa-mobile-alt text-lg"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Responsywność</h3>
+                    <p class="text-gray-600">Korzystaj z aplikacji na dowolnym urządzeniu - komputer, tablet, telefon.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>

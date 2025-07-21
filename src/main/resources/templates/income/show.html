@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista dochodów - SimpleBudget</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:src="@{/js/income-charts.js}"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#06b6d4',
+                            600: '#0891b2',
+                            700: '#0e7490',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        canvas {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            font-smooth: never;
+            -webkit-font-smoothing: none;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a th:href="@{/}" class="flex items-center space-x-2">
+                        <i class="fas fa-wallet text-primary-600 text-2xl"></i>
+                        <span class="text-xl font-bold text-gray-900">SimpleBudget</span>
+                    </a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="hidden md:flex space-x-1">
+                        <a th:href="@{/}" 
+                           class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-100 transition-colors">
+                            <i class="fas fa-home mr-1"></i>Strona główna
+                        </a>
+                        
+                        <div class="relative group">
+                            <button class="px-3 py-2 rounded-md text-sm font-medium bg-primary-100 text-primary-700 transition-colors flex items-center">
+                                <i class="fas fa-plus mr-1"></i>Dochody
+                                <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                            </button>
+                            <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <a th:href="@{/income}" class="block px-4 py-2 text-sm bg-primary-50 text-primary-700 font-medium">
+                                    <i class="fas fa-list mr-2"></i>Lista dochodów
+                                </a>
+                                <a th:href="@{/income/new}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-plus mr-2"></i>Dodaj dochód
+                                </a>
+                                <a th:href="@{/income-categories}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-tags mr-2"></i>Kategorie dochodów
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="relative group">
+                            <button class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-100 transition-colors flex items-center">
+                                <i class="fas fa-minus mr-1"></i>Wydatki
+                                <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                            </button>
+                            <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <a th:href="@{/expense}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-list mr-2"></i>Lista wydatków
+                                </a>
+                                <a th:href="@{/expense/new}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-plus mr-2"></i>Dodaj wydatek
+                                </a>
+                                <a th:href="@{/expense-categories}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-tags mr-2"></i>Kategorie wydatków
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile menu button -->
+                    <div class="md:hidden">
+                        <button id="mobile-menu-button" class="text-gray-700 hover:text-primary-600 focus:outline-none">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mobile menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <div class="space-y-2">
+                    <a th:href="@{/}" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                        <i class="fas fa-home mr-2"></i>Strona główna
+                    </a>
+                    <div class="px-3 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider">Dochody</div>
+                    <a th:href="@{/income}" class="block px-6 py-2 text-sm bg-primary-100 text-primary-700 rounded-md">
+                        <i class="fas fa-list mr-2"></i>Lista dochodów
+                    </a>
+                    <a th:href="@{/income/new}" class="block px-6 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                        <i class="fas fa-plus mr-2"></i>Dodaj dochód
+                    </a>
+                    <a th:href="@{/income-categories}" class="block px-6 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                        <i class="fas fa-tags mr-2"></i>Kategorie dochodów
+                    </a>
+                    <div class="px-3 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider">Wydatki</div>
+                    <a th:href="@{/expense}" class="block px-6 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                        <i class="fas fa-list mr-2"></i>Lista wydatków
+                    </a>
+                    <a th:href="@{/expense/new}" class="block px-6 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                        <i class="fas fa-plus mr-2"></i>Dodaj wydatek
+                    </a>
+                    <a th:href="@{/expense-categories}" class="block px-6 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                        <i class="fas fa-tags mr-2"></i>Kategorie wydatków
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <!-- Header -->
+        <div class="md:flex md:items-center md:justify-between mb-6">
+            <div class="flex-1 min-w-0">
+                <h1 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                    <i class="fas fa-chart-line text-green-600 mr-2"></i>
+                    Lista dochodów
+                </h1>
+                <p class="mt-1 text-sm text-gray-500">
+                    Zarządzaj swoimi przychodami i śledź źródła dochodów
+                </p>
+            </div>
+            <div class="mt-4 flex md:mt-0 md:ml-4">
+                <a th:href="@{/income/new}" 
+                   class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                    <i class="fas fa-plus mr-2"></i>
+                    Dodaj nowy dochód
+                </a>
+            </div>
+        </div>
+
+                <!-- Summary Card -->
+        <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg shadow p-6 mb-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-credit-card text-white text-3xl"></i>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                    <dl>
+                        <dt class="text-sm font-medium text-green-100 truncate">Suma wszystkich dochodów</dt>
+                        <dd class="text-3xl font-bold text-white">
+                            <span th:text="${#numbers.formatDecimal(#aggregates.sum(incomes.![amount]), 0, 2)} + ' zł'">0,00 zł</span>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Miesięczny wykres słupkowy -->
+        <div class="bg-white shadow rounded-lg p-6 mb-6" th:if="${!#lists.isEmpty(incomes)}">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">
+                <i class="fas fa-chart-bar text-green-600 mr-2"></i>
+                Dochody według miesięcy i kategorii
+            </h3>
+            <div class="chart-container">
+                <canvas id="monthlyChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Income Table -->
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <div class="px-4 py-5 sm:p-6">
+                <div th:if="${#lists.isEmpty(incomes)}" class="text-center py-12">
+                    <i class="fas fa-inbox text-gray-400 text-6xl mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Brak dochodów</h3>
+                    <p class="text-gray-500 mb-6">Rozpocznij dodawanie swoich pierwszych dochodów</p>
+                    <a th:href="@{/income/new}" 
+                       class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>
+                        Dodaj pierwszy dochód
+                    </a>
+                </div>
+
+                <div th:if="${!#lists.isEmpty(incomes)}" class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Nazwa
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Kwota
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Kategoria
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Data
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Opis
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Utworzono
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr th:each="income : ${incomes}" class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                                                <i class="fas fa-plus text-green-600"></i>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900" th:text="${income.name}"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-bold text-green-600" th:text="${#numbers.formatDecimal(income.amount, 0, 2)} + ' zł'"></div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        <i class="fas fa-tag mr-1"></i>
+                                        <span th:text="${income.incomeCategory.name}"></span>
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <i class="fas fa-calendar mr-1 text-gray-400"></i>
+                                    <span th:text="${#temporals.format(income.timeWhenHappened, 'dd.MM.yyyy')}"></span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-gray-500 max-w-xs truncate" th:text="${income.description}" th:title="${income.description}"></div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <span th:text="${#temporals.format(income.createdAt, 'dd.MM.yyyy HH:mm')}"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="mt-6 flex justify-center space-x-4">
+            <a th:href="@{/}" 
+               class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Powrót do strony głównej
+            </a>
+            <a th:href="@{/income-categories}" 
+               class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                <i class="fas fa-tags mr-2"></i>
+                Zarządzaj kategoriami
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>

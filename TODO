@@ -1,0 +1,8 @@
+1. Poprawić widoki bo mam layout main ale tego nie używam
+2. Zacząć pełnoprawnie używać spring security
+3. Podłączyć użytkownika do tabel żeby każdy użytkownik miał osobne środowisko
+4. Zrobić ładne tabelki
+5. Podłączyć postgreSQL i może dać możliwość wyboru h2 albo postgreSQL w zależności kto co będzie chciał
+6. Napisać testy
+7. Dodać możliwość edytowania wydatków i income
+8. Zrobić główne kategorie np jedzenie i do tego pod kategorie np glovo żabka itd
