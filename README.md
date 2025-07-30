@@ -1,4 +1,5 @@
 SimpleBudget – Personal Budget Management App
+
 Technologies: Java 24, Spring Boot, Spring Data JPA, H2 Database, Flyway
 
 SimpleBudget is a lightweight personal finance management application built with modern Java and Spring Boot. It allows users to track their income and expenses, categorize transactions, and get a clear overview of their budget.
