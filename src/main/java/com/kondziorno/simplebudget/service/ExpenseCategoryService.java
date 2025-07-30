@@ -14,7 +14,7 @@ public class ExpenseCategoryService {
   public ExpenseCategoryService(ExpenseCategoryRepository expenseCategoryRepository) {
     this.expenseCategoryRepository = expenseCategoryRepository;
   }
-  
+
   public void save(ExpenseCategoryRequest expenseCategoryRequest) {
     ExpenseCategory expenseCategory = new ExpenseCategory();
     expenseCategory.setName(expenseCategoryRequest.getName());

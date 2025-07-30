@@ -29,7 +29,7 @@ public class ExpenseController {
     model.addAttribute("expenses", expenseService.findAll());
     return "expense/show";
   }
-  
+
   @GetMapping("/new")
   public String newExpense(Model model) {
     model.addAttribute("expenseRequest", new ExpenseRequest());
@@ -38,11 +38,11 @@ public class ExpenseController {
   }
 
   @PostMapping("/new")
-  public String createExpense(@Valid @ModelAttribute ExpenseRequest expenseRequest, 
-                              BindingResult bindingResult, Model model) {
+  public String createExpense(@Valid @ModelAttribute ExpenseRequest expenseRequest,
+      BindingResult bindingResult, Model model) {
     if (bindingResult.hasErrors()) {
-        model.addAttribute("expenseCategories", expenseCategoryService.findAll());
-        return "expense/new";
+      model.addAttribute("expenseCategories", expenseCategoryService.findAll());
+      return "expense/new";
     }
 
     expenseService.save(expenseRequest);

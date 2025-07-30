@@ -29,7 +29,7 @@ public class IncomeController {
     model.addAttribute("incomes", incomeService.findAll());
     return "income/show";
   }
-  
+
   @GetMapping("/new")
   public String newIncome(Model model) {
     model.addAttribute("incomeRequest", new IncomeRequest());
@@ -40,11 +40,11 @@ public class IncomeController {
   }
 
   @PostMapping("/new")
-  public String createIncome(@Valid @ModelAttribute IncomeRequest incomeRequest, 
-                              BindingResult bindingResult, Model model) {
+  public String createIncome(@Valid @ModelAttribute IncomeRequest incomeRequest,
+      BindingResult bindingResult, Model model) {
     if (bindingResult.hasErrors()) {
-        model.addAttribute("incomeCategories", incomeCategoryService.findAll());
-        return "income/new";
+      model.addAttribute("incomeCategories", incomeCategoryService.findAll());
+      return "income/new";
     }
 
     incomeService.save(incomeRequest);

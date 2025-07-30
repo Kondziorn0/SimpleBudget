@@ -33,10 +33,10 @@ public class IncomeCategoryController {
   }
 
   @PostMapping("/new")
-  public String createIncomeCategory(@Valid @ModelAttribute IncomeCategoryRequest incomeCategoryRequest, 
-                              BindingResult bindingResult) {
+  public String createIncomeCategory(@Valid @ModelAttribute IncomeCategoryRequest incomeCategoryRequest,
+      BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
-        return "incomeCategory/new";
+      return "incomeCategory/new";
     }
 
     incomeCategoryService.save(incomeCategoryRequest);

@@ -10,21 +10,21 @@ import com.kondziorno.simplebudget.dto.IncomeRequest;
 
 @Service
 public class IncomeService {
-    
+
   private final IncomeRepository incomeRepository;
   private final IncomeCategoryRepository incomeCategoryRepository;
-  
-  public IncomeService(IncomeRepository incomeRepository, 
-                      IncomeCategoryRepository incomeCategoryRepository) {
+
+  public IncomeService(IncomeRepository incomeRepository,
+      IncomeCategoryRepository incomeCategoryRepository) {
     this.incomeRepository = incomeRepository;
     this.incomeCategoryRepository = incomeCategoryRepository;
   }
-  
+
   public Income save(IncomeRequest incomeRequest) {
     // Znajdź kategorię
     IncomeCategory category = incomeCategoryRepository.findById(incomeRequest.getIncomeCategoryId())
         .orElseThrow(() -> new RuntimeException("Income category not found"));
-    
+
     Income income = new Income();
     income.setName(incomeRequest.getName());
     income.setAmount(incomeRequest.getAmount());
@@ -32,10 +32,10 @@ public class IncomeService {
     // Konwertuj LocalDate na LocalDateTime (początek dnia)
     income.setTimeWhenHappened(incomeRequest.getTimeWhenHappened().atStartOfDay());
     income.setIncomeCategory(category);
-    
+
     return incomeRepository.save(income);
   }
-  
+
   public List<Income> findAll() {
     return incomeRepository.findAll();
   }

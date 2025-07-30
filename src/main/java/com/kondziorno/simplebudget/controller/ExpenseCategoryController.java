@@ -33,10 +33,10 @@ public class ExpenseCategoryController {
   }
 
   @PostMapping("/new")
-  public String createExpenseCategory(@Valid @ModelAttribute ExpenseCategoryRequest expenseCategoryRequest, 
-                              BindingResult bindingResult) {
+  public String createExpenseCategory(@Valid @ModelAttribute ExpenseCategoryRequest expenseCategoryRequest,
+      BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
-        return "expenseCategory/new";
+      return "expenseCategory/new";
     }
 
     expenseCategoryService.save(expenseCategoryRequest);
