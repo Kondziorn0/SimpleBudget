@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  th:fragment="layout (pageTitle, contentTemplate)"
+>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,6 +31,27 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
       rel="stylesheet"
     />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:src="@{/js/income-charts.js}"></script>
+    <script th:src="@{/js/expense-charts.js}"></script>
+    <style>
+      canvas {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: crisp-edges;
+        font-smooth: never;
+        -webkit-font-smoothing: none;
+      }
+
+      .chart-container {
+        position: relative;
+        height: 400px;
+        width: 100%;
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+    </style>
   </head>
   <body class="bg-gray-50 min-h-screen">
     <!-- Navigation -->
@@ -207,7 +231,10 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200 mt-auto">
+    <footer
+      class="bg-white border-t border-gray-200"
+      style="position: sticky; top: 100vh"
+    >
       <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
         <div class="text-center text-sm text-gray-500">
           <p>&copy; 2025 SimpleBudget. Zarządzaj swoim budżetem z łatwością.</p>
