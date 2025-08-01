@@ -25,6 +25,10 @@ public class Income {
   @JoinColumn(name = "income_category_id", nullable = false)
   private IncomeCategory incomeCategory;
 
+  @ManyToOne
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
+
   @Column(name = "created_at", updatable = false)
   private LocalDateTime createdAt;
 
