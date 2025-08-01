@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html
   xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
   th:fragment="layout (pageTitle, contentTemplate)"
 >
   <head>
@@ -66,7 +67,10 @@
           </div>
 
           <div class="flex items-center space-x-4">
-            <div class="hidden md:flex space-x-1">
+            <div
+              class="hidden md:flex space-x-1"
+              sec:authorize="isAuthenticated()"
+            >
               <a
                 th:href="@{/}"
                 class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-100 transition-colors"
@@ -144,6 +148,55 @@
                   </a>
                 </div>
               </div>
+            </div>
+
+            <!-- User Profile Dropdown (Authenticated) -->
+            <div sec:authorize="isAuthenticated()" class="relative group">
+              <button
+                class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-100 transition-colors"
+              >
+                <i class="fas fa-user-circle mr-2"></i>
+                <span sec:authentication="name"></span>
+                <i class="fas fa-chevron-down ml-1 text-xs"></i>
+              </button>
+              <div
+                class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50"
+              >
+                <div class="px-4 py-2 text-sm text-gray-500 border-b">
+                  Zalogowany jako
+                  <span sec:authentication="name" class="font-medium"></span>
+                </div>
+                <form th:action="@{/logout}" method="post" class="block">
+                  <button
+                    type="submit"
+                    class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                  >
+                    <i class="fas fa-sign-out-alt mr-2"></i>
+                    Wyloguj się
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Guest menu (Not authenticated) -->
+            <div
+              sec:authorize="!isAuthenticated()"
+              class="hidden md:flex space-x-2"
+            >
+              <a
+                th:href="@{/login}"
+                class="px-4 py-2 text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors"
+              >
+                <i class="fas fa-sign-in-alt mr-1"></i>
+                Zaloguj się
+              </a>
+              <a
+                th:href="@{/register}"
+                class="px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-md hover:bg-primary-700 transition-colors"
+              >
+                <i class="fas fa-user-plus mr-1"></i>
+                Zarejestruj się
+              </a>
             </div>
 
             <!-- Mobile menu button -->
