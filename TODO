@@ -1,6 +1,4 @@
-1. Zacząć pełnoprawnie używać spring security
-2. Podłączyć użytkownika do tabel żeby każdy użytkownik miał osobne środowisko
-3. Podłączyć postgreSQL i może dać możliwość wyboru h2 albo postgreSQL w zależności kto co będzie chciał
-4. Napisać testy
-5. Dodać możliwość edytowania wydatków i income
-6. Zrobić główne kategorie np jedzenie i do tego pod kategorie np glovo żabka itd
+1. Podłączyć postgreSQL i może dać możliwość wyboru h2 albo postgreSQL w zależności kto co będzie chciał
+2. Napisać testy
+3. Dodać możliwość edytowania wydatków i income
+4. Zrobić główne kategorie np jedzenie i do tego pod kategorie np glovo żabka itd
