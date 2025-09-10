@@ -2,9 +2,9 @@ SimpleBudget – Personal Budget Management App
 
 Technologies: Java 24, Spring Boot, Spring Data JPA, H2 Database, Flyway
 
-SimpleBudget is a lightweight personal finance management application built with modern Java and Spring Boot. It allows users to track their income and expenses, categorize transactions, and get a clear overview of their budget.
+SimpleBudget is a personal finance management application that allows users to track incomes and expenses, categorize transactions, and get a clear overview of their budget.
 
-This project is developed as a hobby in my spare time. It's primarily intended for learning purposes:
+The project was designed as a complete showcase of a production-ready Java & Spring Boot application. It demonstrates:
 
 Layered architecture with clear separation of concerns (controllers, services, repositories)
 
@@ -14,4 +14,4 @@ Database versioning with Flyway
 
 In-memory database (H2) for easy setup and testing
 
-The entire source code is available here on GitHub. Feedback and suggestions are welcome!
+The entire source code is publicly available on GitHub as an open-source example of my work in Java and Spring Boot.
